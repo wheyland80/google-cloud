@@ -1,0 +1,69 @@
+# === Terraform Files ===
+# Local Terraform state
+*.tfstate
+*.tfstate.backup
+
+# Terraform crash log files
+crash.log
+
+# Terraform variable overrides (potentially sensitive data)
+*.tfvars
+*.tfvars.json
+
+# Terraform plan output (binary)
+*.tfplan
+
+# Override files that are not meant to be versioned
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Plugin directory
+.terraform/
+
+# === VSCodium Files ===
+# User-specific settings for VSCodium
+.vscode/
+.vscode-oss/
+
+# === OS-specific Files ===
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Log Files ===
+*.log
+
+# === Secrets & Credentials ===
+# Service account keys or any sensitive JSON/YAML files
+*.json
+*.key
+*.pem
+*.crt
+*.p12
+
+# === Miscellaneous ===
+# Ignore backup and temporary files
+*.bak
+*.tmp
+*.swp
+
+# Ignore Python virtual environments (if used for scripting)
+.venv/
+env/
+venv/
+
+# Ignore node_modules if you're using npm/yarn for scripts
+node_modules/
+
+# Ignore Docker-related files (if applicable)
+docker-compose.override.yml
