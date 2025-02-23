@@ -20,14 +20,6 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
     approval_required = false
   }
 
-  substitutions = {
-    _GITHUB_OWNER           = var.github_owner
-    _GITHUB_REPO            = var.github_repo
-    _TERRAFORM_STATE_BUCKET = google_storage_bucket.terraform_state.id
-    _ORGANISATION_ID        = var.organisation_id
-    _BILLING_ACCOUNT_ID     = var.billing_account_id
-  }
-
   build {
     timeout = "60s"
     step {
@@ -38,10 +30,14 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
     step {
       name = "gcr.io/cloud-builders/git"  # Use an image with git
       entrypoint = "bash"
+      env = [
+        "GITHUB_OWNER=${var.github_owner}",
+        "GITHUB_REPO=${var.github_repo}"
+      ]
       args = [
         "-c",
         <<-EOT
-          git clone https://github.com/$_GITHUB_OWNER/$_GITHUB_REPO.git
+          git clone https://github.com/$$GITHUB_OWNER/$$GITHUB_REPO.git
         EOT
       ]
     }
@@ -49,6 +45,11 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
     step {
       name = "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"  # Use Google Cloud SDK image
       entrypoint = "bash"
+      env = [
+        "TERRAFORM_STATE_BUCKET=${google_storage_bucket.terraform_state.id}",
+        "ORGANISATION_ID=${var.organisation_id}",
+        "BILLING_ACCOUNT_ID=${var.billing_account_id}",
+      ]
       args = [
         "-c",
         <<-EOT
@@ -66,14 +67,14 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
           echo '
           terraform {
             backend "gcs" {
-              bucket = "$_TERRAFORM_STATE_BUCKET"
+              bucket = "$$TERRAFORM_STATE_BUCKET"
               prefix = "bootstrap/"
             }
           } ' > backend.tf
 
           tofu init
 
-          tofu plan -var "organisation_id=$_ORGANISATION_ID" -var "billing_account_id=$_BILLING_ACCOUNT_ID" -out /workspace/terraform-plan.out
+          tofu plan -var "organisation_id=$$ORGANISATION_ID" -var "billing_account_id=$$BILLING_ACCOUNT_ID" -out /workspace/terraform-plan.out
 
           ls -Rl ./
         EOT
