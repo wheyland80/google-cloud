@@ -17,19 +17,19 @@ variable "github_repo_url" {
 variable "location" {
   description = "The default location for resources"
   type        = string
-  default     = "us"
+  default     = "EU"
 }
 
 variable "region" {
   description = "The default region for resources"
   type        = string
-  default     = "us-east1"
+  default     = "europe-west1"
 }
 
 variable "zone" {
   description = "The default zone for resources"
   type        = string
-  default     = "us-east1-c"
+  default     = "europe-west1-a"
 }
 
 variable "github_owner" {

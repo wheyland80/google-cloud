@@ -7,6 +7,7 @@ module "cicd_project" {
   services = [
     "iam.googleapis.com",
     "cloudbuild.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
   ]
   billing_account_id = var.billing_account_id
 }

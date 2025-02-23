@@ -58,6 +58,15 @@ gcloud auth login
 gcloud auth application-default login
 ```
 
+### Install JQ CLI command
+
+We use the **jq** Command-line JSON processor to extract the name of the OpenTofu state bucket
+
+```bash
+sudo apt update
+sudo apt install jq
+```
+
 ### Environment configuration
 
 To run the initial terraform you need to configure the following environment variables
@@ -97,10 +106,10 @@ tofu apply /tmp/plan.out
 
 ### Migrate to Cloud Build
 
-The local state file should be copied and migrated to Google Cloud Storage
+The local state file should be migrated to Google Cloud Storage
 
 ```bash
-gsutil cp ...
+gsutil cp ./terraform.tfstate gs://$( tofu output -json terraform_state_bucket_id | jq -r . )/bootstrap/terraform.tfstate
 ```
 
-Now that your bootstrap project and resources have been provisioned. Further changes to the environment should be handled via the CICD pipeline. Jump to the Cloud Build section of Google Cloud to provision the 02-foundation resources, following the 02-foundation/README.md
+Now that your bootstrap project and resources have been provisioned. Further changes to the environment should be handled via the CICD pipeline (including further 01-bootstrap terraform plan/apply). Jump to the Cloud Build section of Google Cloud to provision further resources, following the 02-foundation/README.md

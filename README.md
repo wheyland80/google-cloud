@@ -2,13 +2,13 @@
 
 A comprehensive Google Cloud IAC (terraform) library. Includes everything you need to build (and tear down) a mature Google Cloud organisation on demand.
 
-This repository contains a set of Terraform modules to quickly provision many services.
+The purpose of this repository is to make it easy to iterate and develop Google Cloud terraform modules with minimal configuration and dependencies.
 
-The modules are numbered in the order that they should be provisioned. Modules with the same number can be provisioned in any order following modules provisioned with lower numbers.
+To get started, register a Google Cloud Org account (and pre-requisites including Google Workspace or Cloud Identity) and install Google Cloud SDK and OpenTofu (or Terraform).
+
+This repository contains a set of Terraform modules to get up and running quickly provision many services via Cloud Build. You are free to switch to alternative CICD tools but those will require manual configuration. The Goal of this repository is ZERO configuration and Cloud Build provides that capability.
 
 ## Pre-requisites
-
-
 
 ## Modules
 
@@ -16,7 +16,7 @@ The modules are numbered in the order that they should be provisioned. Modules w
 
 The first module in the set, Bootstap.
 
-The bootstrap module is the only terraform you will be running locally and provisions a bootstrap folder that will hold the terraform IAC service accounts and state files.
+The bootstrap module is the only terraform you will be running locally and provisions a bootstrap folder that will hold the terraform IAC service account and state files.
 
 ### 02 - Foundation
 
