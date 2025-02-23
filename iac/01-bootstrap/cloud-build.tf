@@ -13,6 +13,14 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
     approval_required = false
   }
 
+  substitutions = {
+    _GITHUB_OWNER           = var.github_owner
+    _GITHUB_REPO            = var.github_repo
+    _TERRAFORM_STATE_BUCKET = google_storage_bucket.terraform_state.id
+    _ORGANISATION_ID        = var.organisation_id
+    _BILLING_ACCOUNT_ID     = var.billing_account_id
+  }
+
   build {
     timeout = "60s"
     step {
@@ -26,7 +34,7 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
       args = [
         "-c",
         <<-EOT
-          git clone https://github.com/${var.github_owner}/${var.github_repo}.git
+          git clone https://github.com/$_GITHUB_OWNER/$_GITHUB_REPO.git
         EOT
       ]
     }
@@ -51,20 +59,16 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
           echo '
           terraform {
             backend "gcs" {
-              bucket = "${google_storage_bucket.terraform_state.id}"
+              bucket = "$_TERRAFORM_STATE_BUCKET"
               prefix = "bootstrap/"
             }
           } ' > backend.tf
 
-          cat backend.tf
-
           tofu init
 
-          tofu plan -var "organisation_id=${var.organisation_id}" -var "billing_account_id=${var.billing_account_id}" -out /tmp/plan.out
+          tofu plan -var "organisation_id=$_ORGANISATION_ID" -var "billing_account_id=$_BILLING_ACCOUNT_ID" -out /workspace/terraform-plan.out
 
           ls -Rl ./
-
-          gcloud projects list
         EOT
       ]
     }
