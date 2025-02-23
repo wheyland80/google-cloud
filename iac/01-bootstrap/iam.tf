@@ -5,16 +5,47 @@ resource "google_service_account" "iac_service_account" {
   project      = module.cicd_project.project_id
 }
 
-# Assign necessary roles to the CI/CD Service Account
-resource "google_project_iam_member" "iac_sa_roles" {
+# # Grant Org Admin to the IAC Service Account
+# resource "google_organization_iam_member" "iac_sa_org_admin" {
+#   org_id = var.organisation_id
+#   role   = "roles/resourcemanager.folderAdmin"
+#   member = "serviceAccount:${google_service_account.iac_service_account.email}"
+# }
+
+# Grant CI/CD project permissions to the IAC Service Account
+resource "google_project_iam_member" "grant_cicd_project_permissions" {
   for_each = toset([
     "roles/cloudbuild.builds.editor",
-    "roles/source.reader",
-    "roles/iam.serviceAccountUser"
+    "roles/iam.serviceAccountUser",
+    "roles/logging.logWriter",
   ])
   project = module.cicd_project.project_id
   role    = each.key
   member  = "serviceAccount:${google_service_account.iac_service_account.email}"
+}
+
+# Grant Foundation folder permissions to the IAC Service Account
+resource "google_folder_iam_member" "grant_foundation_folder_permissions" {
+  for_each = toset([
+    "roles/owner",
+    "roles/resourcemanager.folderAdmin"
+  ])
+
+  folder = google_folder.foundation_folder.id
+  role   = each.key
+  member = "serviceAccount:${google_service_account.iac_service_account.email}"
+}
+
+# Grant Bootstrap folder permissions to the IAC Service Account
+resource "google_folder_iam_member" "grant_bootstrap_folder_permissions" {
+  for_each = toset([
+    "roles/owner",
+    "roles/resourcemanager.folderAdmin"
+  ])
+
+  folder = google_folder.bootstrap_folder.id
+  role   = each.key
+  member = "serviceAccount:${google_service_account.iac_service_account.email}"
 }
 
 # Grant access to Cloud Build Logs bucket to the IAC service account

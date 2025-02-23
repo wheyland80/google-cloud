@@ -6,6 +6,7 @@ module "cicd_project" {
   folder_id  = google_folder.bootstrap_folder.id
   services = [
     "iam.googleapis.com",
+    "serviceusage.googleapis.com",
     "cloudbuild.googleapis.com",
     "cloudresourcemanager.googleapis.com",
   ]

@@ -109,7 +109,7 @@ tofu apply /tmp/plan.out
 The local state file should be migrated to Google Cloud Storage
 
 ```bash
-gsutil cp ./terraform.tfstate gs://$( tofu output -json terraform_state_bucket_id | jq -r . )/bootstrap/terraform.tfstate
+gsutil cp ./terraform.tfstate gs://$( tofu output -json terraform_state_bucket_id | jq -r . )/bootstrap/default.tfstate
 ```
 
 Now that your bootstrap project and resources have been provisioned. Further changes to the environment should be handled via the CICD pipeline (including further 01-bootstrap terraform plan/apply). Jump to the Cloud Build section of Google Cloud to provision further resources, following the 02-foundation/README.md
