@@ -7,7 +7,14 @@ resource "google_cloudbuild_trigger" "bootstrap-plan-trigger" {
 
   service_account = google_service_account.iac_service_account.id
 
-  repository_event_config {}
+  repository_event_config {
+  }
+
+  lifecycle {
+    ignore_changes = [
+      repository_event_config
+    ]
+  }
 
   approval_config {
     approval_required = false
